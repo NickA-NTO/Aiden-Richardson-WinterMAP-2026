@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter MAP Deep Dive: Aiden Richardson</title>
+    <style>
+        :root {
+            --danger: #e53e3e;
+            --warning: #d69e2e;
+            --success: #38a169;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --bg: #f7fafc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--text);
+            background: var(--bg);
+            padding: 2rem;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            background: #1e3a5f;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px 8px 0 0;
+        }
+        .header h1 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+        .header p { opacity: 0.8; font-size: 0.9rem; }
+        .section {
+            background: white;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-top: none;
+        }
+        .section:last-of-type { border-radius: 0 0 8px 8px; }
+        .section-title {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .metric {
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 6px;
+        }
+        .metric-value { font-size: 1.5rem; font-weight: 700; }
+        .metric-label { font-size: 0.75rem; color: var(--text-light); }
+        .metric.bad .metric-value { color: var(--danger); }
+        .metric.warn .metric-value { color: var(--warning); }
+        .metric.good .metric-value { color: var(--success); }
+        .root-cause {
+            background: #fff5f5;
+            border-left: 4px solid var(--danger);
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+        }
+        .root-cause strong { color: var(--danger); }
+        .root-cause ul { margin-left: 1.25rem; margin-top: 0.5rem; }
+        .root-cause li { margin-bottom: 0.5rem; }
+        .fix-list { list-style: none; }
+        .fix-list li {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: var(--bg);
+            border-radius: 6px;
+            border-left: 4px solid var(--danger);
+        }
+        .fix-list li:nth-child(n+2) { border-left-color: var(--warning); }
+        .fix-list .fix-title { font-weight: 600; }
+        .fix-list .fix-detail { font-size: 0.85rem; color: var(--text-light); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg); font-weight: 600; color: var(--text-light); text-transform: uppercase; font-size: 0.75rem; }
+        .badge {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .badge-danger { background: #fed7d7; color: #c53030; }
+        .badge-success { background: #c6f6d5; color: #276749; }
+        .badge-warning { background: #fefcbf; color: #975a16; }
+        .data-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .data-table h4 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-light); }
+        @media (max-width: 600px) {
+            .metrics { grid-template-columns: repeat(2, 1fr); }
+            .data-tables { grid-template-columns: 1fr; }
+        }
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+        .app-performance { margin-top: 1.5rem; }
+        .app-performance h4 { font-size: 0.85rem; margin-bottom: 0.75rem; color: var(--text-light); }
+        .app-row {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 6px;
+        }
+        .app-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+        .app-bars { display: flex; flex-direction: column; gap: 0.4rem; }
+        .bar-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 50px;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .bar-label { font-size: 0.7rem; color: var(--text-light); }
+        .bar-track {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .bar-fill { height: 100%; border-radius: 6px; }
+        .bar-fill.good { background: var(--success); }
+        .bar-fill.warn { background: var(--warning); }
+        .bar-fill.bad { background: var(--danger); }
+        .bar-value { font-size: 0.7rem; color: var(--text-light); text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Winter MAP Deep Dive: Aiden Richardson</h1>
+            <p>Grade 1 | Alpha School Austin | Winter 2025-26</p>
+        </div>
+
+        <!-- Section 1: Root Cause Analysis -->
+        <div class="section">
+            <div class="section-title">Root Cause Analysis</div>
+            <div class="metrics">
+                <div class="metric warn">
+                    <div class="metric-value">1.18x</div>
+                    <div class="metric-label">Winter-to-Winter Growth</div>
+                </div>
+                <div class="metric bad">
+                    <div class="metric-value">55%</div>
+                    <div class="metric-label">Idle Time</div>
+                </div>
+                <div class="metric bad">
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Effective Grades Mastered</div>
+                </div>
+                <div class="metric warn">
+                    <div class="metric-value">64%</div>
+                    <div class="metric-label">Quiz Accuracy</div>
+                </div>
+            </div>
+
+            <div class="root-cause">
+                <ul>
+                    <li><strong>ClearFluency G2 Misplacement (Nov 5 - Jan 9):</strong> Placed in G2 content before passing G1 ORF benchmark (62 WCPM vs 67 required). Accuracy ranged wildly 10%-87% indicating content too hard.</li>
+                    <li><strong>Excessive Idle Time (55% "Other"):</strong> ClearFluency shows only 45% of time spent on actual learning. Sessions frequently show 60-108 min of idle time (Dec 11-12).</li>
+                    <li><strong>ORF Testing Gap (8 weeks):</strong> Last ORF Dec 11 at 62 WCPM (5 short of G1 benchmark). No retest despite ClearFluency showing WCPM 80-140 range in January. Delayed effective grade advancement opportunity.</li>
+                    <li><strong>Lalilo/Amplify Overlap (Aug-Nov):</strong> Both apps addressed phonics simultaneously. Amplify phased out Nov 4 after strong progress (91 subskills). Lalilo continues at G2 level despite student not passing G1 ORF. Verdict: PARTIALLY REDUNDANT.</li>
+                    <li><strong>Informational Text Comprehension Gap:</strong> ClearFluency shows Context Clues 40%, Cause/Effect 53%, Summarize 50%. MobyMax confirmed: Main Idea 10%, Cause-Effect 20%, Summarize 20%. Consistent weakness across apps.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 2: Remediation Plan -->
+        <div class="section">
+            <div class="section-title">Remediation Plan</div>
+            <ol class="fix-list">
+                <li>
+                    <div class="fix-title">1. Administer ORF Assessment Immediately</div>
+                    <div class="fix-detail">Student at 62 WCPM on Dec 11, likely at/above 67 WCPM now based on ClearFluency WCPM 80-140 range. Test this week on Level J. If passes G1 benchmark, schedule G2 effective grade test.</div>
+                </li>
+                <li>
+                    <div class="fix-title">2. Reduce ClearFluency Idle Time</div>
+                    <div class="fix-detail">Target &lt;20% "Other" time (currently 55%). Investigate root cause: technical issues, disengagement, or environmental factors. Monitor session completion rates.</div>
+                </li>
+                <li>
+                    <div class="fix-title">3. Maintain G1 Hole-Filling Placement</div>
+                    <div class="fix-detail">Current ClearFluency G1 placement is appropriate given ORF level. Accuracy has improved since moving from G2 content. Continue until G1 ORF benchmark passed.</div>
+                </li>
+                <li>
+                    <div class="fix-title">4. Custom Plan: Informational Text Comprehension</div>
+                    <div class="fix-detail">Target Main Idea, Cause/Effect, and Summarization skills. Both ClearFluency and MobyMax data confirm these gaps. Focus on nonfiction text structures.</div>
+                </li>
+                <li>
+                    <div class="fix-title">5. Evaluate Lalilo Placement Level</div>
+                    <div class="fix-detail">Currently working at G2 level but student hasn't passed G1 ORF. Verify Lalilo placement matches actual reading level. Consider reallocating Lalilo time to ClearFluency if misaligned.</div>
+                </li>
+            </ol>
+        </div>
+
+        <!-- Section 3: Supporting Data -->
+        <div class="section">
+            <div class="section-title">Supporting Data</div>
+
+            <div class="data-tables">
+                <div class="data-table">
+                    <h4>RIT Score Trajectory</h4>
+                    <table>
+                        <tr>
+                            <th>Period</th>
+                            <th>RIT</th>
+                            <th>Change</th>
+                        </tr>
+                        <tr>
+                            <td>Winter 2024-25 (K)</td>
+                            <td>165</td>
+                            <td><span class="badge badge-success">97th %ile</span></td>
+                        </tr>
+                        <tr>
+                            <td>Fall 2025-26 (G1)</td>
+                            <td>182</td>
+                            <td><span class="badge badge-success">+17</span></td>
+                        </tr>
+                        <tr>
+                            <td>Winter 2025-26 (G1)</td>
+                            <td>185</td>
+                            <td><span class="badge badge-warning">+3</span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="data-table">
+                    <h4>MAP Domain Scores (Winter 2025-26)</h4>
+                    <table>
+                        <tr>
+                            <th>Domain</th>
+                            <th>RIT</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Vocabulary</td>
+                            <td>182</td>
+                            <td><span class="badge badge-warning">Below Avg</span></td>
+                        </tr>
+                        <tr>
+                            <td>Foundational</td>
+                            <td>183</td>
+                            <td><span class="badge badge-warning">Below Avg</span></td>
+                        </tr>
+                        <tr>
+                            <td>Language/Writing</td>
+                            <td>187</td>
+                            <td><span class="badge badge-success">Average</span></td>
+                        </tr>
+                        <tr>
+                            <td>Literature/Info</td>
+                            <td>188</td>
+                            <td><span class="badge badge-success">Average</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="data-table" style="margin-top: 1.5rem;">
+                <h4>ORF Placement Check (Literably)</h4>
+                <table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Text Level</th>
+                        <th>WCPM</th>
+                        <th>Accuracy</th>
+                        <th>Comp</th>
+                        <th>Benchmark</th>
+                    </tr>
+                    <tr>
+                        <td>Aug 29, 2025</td>
+                        <td>Level K</td>
+                        <td>54</td>
+                        <td>100%</td>
+                        <td>4/5</td>
+                        <td><span class="badge badge-success">PASS (K)</span></td>
+                    </tr>
+                    <tr>
+                        <td>Sep 24, 2025</td>
+                        <td>Level M (G2)</td>
+                        <td>36</td>
+                        <td>92.3%</td>
+                        <td>3/5</td>
+                        <td><span class="badge badge-danger">DID NOT PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td>Dec 11, 2025</td>
+                        <td>Level J (G1)</td>
+                        <td>62</td>
+                        <td>96.9%</td>
+                        <td>5/5</td>
+                        <td><span class="badge badge-danger">DID NOT PASS (need 67)</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="data-table" style="margin-top: 1.5rem;">
+                <h4>Comprehension Skills (ClearFluency)</h4>
+                <table>
+                    <tr>
+                        <th>Skill</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                    </tr>
+                    <tr>
+                        <td>Context Clues</td>
+                        <td>40% (4/10)</td>
+                        <td><span class="badge badge-danger">Needs Work</span></td>
+                    </tr>
+                    <tr>
+                        <td>Nonfiction Text Features</td>
+                        <td>50% (21/42)</td>
+                        <td><span class="badge badge-danger">Needs Work</span></td>
+                    </tr>
+                    <tr>
+                        <td>Retell/Summarize</td>
+                        <td>50% (21/42)</td>
+                        <td><span class="badge badge-danger">Needs Work</span></td>
+                    </tr>
+                    <tr>
+                        <td>Ask Questions</td>
+                        <td>53% (9/17)</td>
+                        <td><span class="badge badge-danger">Needs Work</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cause and Effect</td>
+                        <td>53% (34/64)</td>
+                        <td><span class="badge badge-danger">Needs Work</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="app-performance">
+                <h4>App Performance</h4>
+
+                <div class="app-row">
+                    <div class="app-name">ClearFluency</div>
+                    <div class="app-bars">
+                        <div class="bar-row">
+                            <span class="bar-label">Fluency (WCPM)</span>
+                            <div class="bar-track">
+                                <div class="bar-fill warn" style="width: 62%"></div>
+                            </div>
+                            <span class="bar-value">62</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Active Time</span>
+                            <div class="bar-track">
+                                <div class="bar-fill bad" style="width: 45%"></div>
+                            </div>
+                            <span class="bar-value">45%</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Accuracy</span>
+                            <div class="bar-track">
+                                <div class="bar-fill warn" style="width: 64%"></div>
+                            </div>
+                            <span class="bar-value">64%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-row">
+                    <div class="app-name">Lalilo</div>
+                    <div class="app-bars">
+                        <div class="bar-row">
+                            <span class="bar-label">Total XP</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 75%"></div>
+                            </div>
+                            <span class="bar-value">3,073</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Active Min</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 80%"></div>
+                            </div>
+                            <span class="bar-value">1,440</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">XP/Min</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 100%"></div>
+                            </div>
+                            <span class="bar-value">2.1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-row">
+                    <div class="app-name">Amplify<br><span style="font-size:0.7rem;color:#718096">(Phased Out)</span></div>
+                    <div class="app-bars">
+                        <div class="bar-row">
+                            <span class="bar-label">Total XP</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 50%"></div>
+                            </div>
+                            <span class="bar-value">1,337</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Active Min</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 50%"></div>
+                            </div>
+                            <span class="bar-value">728</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label">Subskills</span>
+                            <div class="bar-track">
+                                <div class="bar-fill good" style="width: 100%"></div>
+                            </div>
+                            <span class="bar-value">91/20</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Aiden Richardson | Grade 1 | Alpha School Austin | Winter 2025-26<br>
+            Data: MAP Assessment, ClearFluency, Lalilo, Amplify, Literably ORF, MobyMax | Generated: February 2026
+        </div>
+    </div>
+</body>
+</html>
