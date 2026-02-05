@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Winter MAP Deep Dive: Aiden Richardson</title>
+    <title>Reading Deep Dive: Aiden Richardson</title>
     <style>
         :root {
             --danger: #e53e3e;
@@ -49,7 +49,7 @@
         }
         .metrics {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 1rem;
             margin-bottom: 1rem;
         }
@@ -64,6 +64,13 @@
         .metric.bad .metric-value { color: var(--danger); }
         .metric.warn .metric-value { color: var(--warning); }
         .metric.good .metric-value { color: var(--success); }
+        .highlight-box {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+        }
+        .highlight-box strong { color: #2b6cb0; }
         .root-cause {
             background: #fff5f5;
             border-left: 4px solid var(--danger);
@@ -71,7 +78,7 @@
             margin-top: 1rem;
         }
         .root-cause strong { color: var(--danger); }
-        .root-cause ul { margin-left: 1.25rem; margin-top: 0.5rem; }
+        .root-cause ul { margin-left: 1.2rem; margin-top: 0.5rem; }
         .root-cause li { margin-bottom: 0.5rem; }
         .fix-list { list-style: none; }
         .fix-list li {
@@ -81,7 +88,8 @@
             border-radius: 6px;
             border-left: 4px solid var(--danger);
         }
-        .fix-list li:nth-child(n+2) { border-left-color: var(--warning); }
+        .fix-list li:nth-child(2) { border-left-color: var(--warning); }
+        .fix-list li:nth-child(3) { border-left-color: var(--warning); }
         .fix-list .fix-title { font-weight: 600; }
         .fix-list .fix-detail { font-size: 0.85rem; color: var(--text-light); }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -110,11 +118,12 @@
             font-size: 0.75rem;
             color: var(--text-light);
         }
+        /* App Performance Bars */
         .app-performance { margin-top: 1.5rem; }
         .app-performance h4 { font-size: 0.85rem; margin-bottom: 0.75rem; color: var(--text-light); }
         .app-row {
             display: grid;
-            grid-template-columns: 100px 1fr;
+            grid-template-columns: 120px 1fr;
             gap: 1rem;
             margin-bottom: 1rem;
             padding: 0.75rem;
@@ -151,34 +160,40 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Winter MAP Deep Dive: Aiden Richardson</h1>
-            <p>Grade 1 | Alpha School Austin | Winter 2025-26</p>
+            <h1>Reading Deep Dive: Aiden Richardson</h1>
+            <p>Grade 1 | Alpha School Austin | Winter 2025-26 MAP Assessment</p>
         </div>
 
         <!-- Section 1: Root Cause Analysis -->
         <div class="section">
             <div class="section-title">Root Cause Analysis</div>
+
             <div class="metrics">
-                <div class="metric warn">
+                <div class="metric bad">
                     <div class="metric-value">1.18x</div>
-                    <div class="metric-label">Winter-to-Winter Growth</div>
+                    <div class="metric-label">Winter-Winter Growth</div>
+                </div>
+                <div class="metric warn">
+                    <div class="metric-value">22 min</div>
+                    <div class="metric-label">Avg Time/Day</div>
                 </div>
                 <div class="metric bad">
-                    <div class="metric-value">0</div>
-                    <div class="metric-label">Effective Grades Mastered</div>
+                    <div class="metric-value">0.78</div>
+                    <div class="metric-label">XP/Minute</div>
                 </div>
                 <div class="metric warn">
-                    <div class="metric-value">64%</div>
-                    <div class="metric-label">Quiz Accuracy</div>
+                    <div class="metric-value">71%</div>
+                    <div class="metric-label">Avg Accuracy</div>
                 </div>
             </div>
 
             <div class="root-cause">
+                <strong>Why didn't Aiden achieve 2x growth?</strong>
                 <ul>
-                    <li><strong>ClearFluency G2 Misplacement (Nov 5 - Jan 9):</strong> Placed in G2 content before passing G1 ORF benchmark (62 WCPM vs 67 required). Accuracy ranged wildly 10%-87% indicating content too hard.</li>
-                    <li><strong>ORF Testing Gap (8 weeks):</strong> Last ORF Dec 11 at 62 WCPM (5 short of G1 benchmark). No retest despite ClearFluency showing WCPM 80-140 range in January. Delayed effective grade advancement opportunity.</li>
-                    <li><strong>Lalilo/Amplify Overlap (Aug-Nov):</strong> Both apps addressed phonics simultaneously. Amplify phased out Nov 4 after strong progress. Lalilo continues - 88% accuracy and extensive skill coverage suggest appropriate placement.</li>
-                    <li><strong>Informational Text Comprehension Gap:</strong> ClearFluency shows Context Clues 40%, Cause/Effect 53%, Summarize 50%. MobyMax confirmed: Main Idea 10%, Cause-Effect 20%, Summarize 20%. Consistent weakness across apps.</li>
+                    <li><strong>Premature G2 ClearFluency Placement:</strong> Student placed in ClearFluency Grade 2 (Nov 5) before passing Level J ORF benchmark. Dec 11 ORF showed 62 WCPM (target: 67). Accuracy in ClearFluency G2 ranged 10-87% (avg 57%) with XP/Min of 0.78 — content was too hard.</li>
+                    <li><strong>ORF Testing Gap:</strong> Last ORF assessment Dec 11 (62 WCPM). ClearFluency recent data shows 80-140 WCPM range. 8+ weeks without ORF retest means student may have already passed G1 benchmark but wasn't tested to confirm and advance.</li>
+                    <li><strong>Redundant Phonics Instruction:</strong> Lalilo and Amplify both taught phonics Aug 14 - Nov 4 (overlapping 82 days). Combined time ~50 min/day on similar content. Amplify phased out Nov 4, but 2.5 months of redundant instruction reduced time for comprehension work.</li>
+                    <li><strong>MobyMax Comprehension Skills Not Mastered:</strong> MAP identified main idea, summarizing, and cause/effect as skills to develop. MobyMax records show repeated failures: Main Idea 10% (prior: 15%, 45%, 30%), Summarize 20% (prior: 20%, 40%, 20%), Cause/Effect 20% (prior: 0%, 20%, 0%). MobyMax was phased out Oct 21 after only 4 days — insufficient time to address these skill gaps.</li>
                 </ul>
             </div>
         </div>
@@ -186,18 +201,19 @@
         <!-- Section 2: Remediation Plan -->
         <div class="section">
             <div class="section-title">Remediation Plan</div>
+
             <ol class="fix-list">
                 <li>
                     <div class="fix-title">1. Administer ORF Assessment Immediately</div>
-                    <div class="fix-detail">Student at 62 WCPM on Dec 11, likely at/above 67 WCPM now based on ClearFluency WCPM 80-140 range. Test this week on Level J. If passes G1 benchmark, schedule G2 effective grade test.</div>
+                    <div class="fix-detail">Test on Level J text. ClearFluency G1 data shows 67-92% accuracy and improved fluency. Student likely ready to pass G1 benchmark (67 WCPM). If passed, can advance to G2 content appropriately.</div>
                 </li>
                 <li>
-                    <div class="fix-title">2. Maintain G1 Hole-Filling Placement</div>
-                    <div class="fix-detail">Current ClearFluency G1 placement is appropriate given ORF level. Accuracy has improved since moving from G2 content. Continue until G1 ORF benchmark passed.</div>
+                    <div class="fix-title">2. Maintain ClearFluency G1 Hole-Filling Placement</div>
+                    <div class="fix-detail">Current placement (since Jan 12) shows appropriate metrics: 76% accuracy, XP/Min improving. Do not advance to G2 until Level J ORF benchmark is passed.</div>
                 </li>
                 <li>
-                    <div class="fix-title">3. Custom Plan: Informational Text Comprehension</div>
-                    <div class="fix-detail">Target Main Idea, Cause/Effect, and Summarization skills. Both ClearFluency and MobyMax data confirm these gaps. Focus on nonfiction text structures.</div>
+                    <div class="fix-title">3. Add Targeted Comprehension Intervention</div>
+                    <div class="fix-detail">MAP instructional areas identify main idea, supporting details, cause/effect, and summarizing as skills to develop (RIT 181-190). Consider re-rostering MobyMax Informational or adding custom comprehension practice targeting these specific skills with Grade 1-2 level texts.</div>
                 </li>
             </ol>
         </div>
@@ -237,8 +253,9 @@
                         </tr>
                     </table>
                 </div>
+
                 <div class="data-table">
-                    <h4>MAP Domain Scores (Winter 2025-26)</h4>
+                    <h4>MAP Domain Scores (Winter 2026)</h4>
                     <table>
                         <tr>
                             <th>Domain</th>
@@ -251,7 +268,7 @@
                             <td><span class="badge badge-warning">Below Avg</span></td>
                         </tr>
                         <tr>
-                            <td>Foundational</td>
+                            <td>Foundational Skills</td>
                             <td>183</td>
                             <td><span class="badge badge-warning">Below Avg</span></td>
                         </tr>
@@ -261,7 +278,7 @@
                             <td><span class="badge badge-success">Average</span></td>
                         </tr>
                         <tr>
-                            <td>Literature/Info</td>
+                            <td>Literature/Informational</td>
                             <td>188</td>
                             <td><span class="badge badge-success">Average</span></td>
                         </tr>
@@ -269,149 +286,115 @@
                 </div>
             </div>
 
-            <div class="data-table" style="margin-top: 1.5rem;">
-                <h4>ORF Placement Check (Literably)</h4>
-                <table>
-                    <tr>
-                        <th>Date</th>
-                        <th>Text Level</th>
-                        <th>WCPM</th>
-                        <th>Accuracy</th>
-                        <th>Comp</th>
-                        <th>Benchmark</th>
-                    </tr>
-                    <tr>
-                        <td>Aug 29, 2025</td>
-                        <td>Level K</td>
-                        <td>54</td>
-                        <td>100%</td>
-                        <td>4/5</td>
-                        <td><span class="badge badge-success">PASS (K)</span></td>
-                    </tr>
-                    <tr>
-                        <td>Sep 24, 2025</td>
-                        <td>Level M (G2)</td>
-                        <td>36</td>
-                        <td>92.3%</td>
-                        <td>3/5</td>
-                        <td><span class="badge badge-danger">DID NOT PASS</span></td>
-                    </tr>
-                    <tr>
-                        <td>Dec 11, 2025</td>
-                        <td>Level J (G1)</td>
-                        <td>62</td>
-                        <td>96.9%</td>
-                        <td>5/5</td>
-                        <td><span class="badge badge-danger">DID NOT PASS</span></td>
-                    </tr>
-                </table>
-            </div>
+            <h4 style="font-size: 0.85rem; margin: 1.5rem 0 0.5rem; color: var(--text-light);">ORF Placement Check</h4>
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Text Level</th>
+                    <th>WCPM</th>
+                    <th>Accuracy</th>
+                    <th>Comp</th>
+                    <th>Benchmark</th>
+                </tr>
+                <tr>
+                    <td>Aug 29, 2025</td>
+                    <td>Level D (K)</td>
+                    <td>54</td>
+                    <td>100%</td>
+                    <td>4/5</td>
+                    <td><span class="badge badge-success">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Sep 24, 2025</td>
+                    <td>Level M (G2)</td>
+                    <td>36</td>
+                    <td>92.3%</td>
+                    <td>3/5</td>
+                    <td><span class="badge badge-danger">DID NOT PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Dec 11, 2025</td>
+                    <td>Level J (G1)</td>
+                    <td>62</td>
+                    <td>96.9%</td>
+                    <td>5/5</td>
+                    <td><span class="badge badge-danger">DID NOT PASS (67 req)</span></td>
+                </tr>
+            </table>
 
-            <div class="data-tables" style="margin-top: 1.5rem;">
-                <div class="data-table">
-                    <h4>App Usage Timeline (From Daily Metrics)</h4>
-                    <table>
-                        <tr>
-                            <th>App</th>
-                            <th>Period</th>
-                            <th>Days</th>
-                            <th>XP</th>
-                            <th>Notes</th>
-                        </tr>
-                        <tr>
-                            <td>Amplify</td>
-                            <td>Aug 15 - Nov 4</td>
-                            <td>36</td>
-                            <td>1,337</td>
-                            <td>87% acc, phased out</td>
-                        </tr>
-                        <tr>
-                            <td>ClearFluency G2</td>
-                            <td>Nov 5 - Jan 9</td>
-                            <td>35</td>
-                            <td>1,175</td>
-                            <td>57% acc (too hard)</td>
-                        </tr>
-                        <tr>
-                            <td>ClearFluency G1</td>
-                            <td>Jan 12 - Feb 3</td>
-                            <td>12</td>
-                            <td>540</td>
-                            <td>76% acc (appropriate)</td>
-                        </tr>
-                        <tr>
-                            <td>Lalilo (G2)</td>
-                            <td>Aug 14 - Present</td>
-                            <td>85</td>
-                            <td>3,186</td>
-                            <td>88% acc</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="data-table">
-                    <h4>MAP-Indicated Placement vs Actual</h4>
-                    <table>
-                        <tr>
-                            <th>Indicator</th>
-                            <th>Recommended</th>
-                            <th>Actual</th>
-                            <th>Match?</th>
-                        </tr>
-                        <tr>
-                            <td>Effective Grade</td>
-                            <td>Grade 1</td>
-                            <td>G2 (ClearFluency)</td>
-                            <td><span class="badge badge-danger">1 grade high</span></td>
-                        </tr>
-                        <tr>
-                            <td>ORF Prerequisite</td>
-                            <td>Pass G1 (67 WCPM)</td>
-                            <td>62 WCPM (Dec 11)</td>
-                            <td><span class="badge badge-danger">Not passed</span></td>
-                        </tr>
-                        <tr>
-                            <td>Knowledge Grade</td>
-                            <td>Grade 2</td>
-                            <td>G2 content</td>
-                            <td><span class="badge badge-success">Match</span></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+            <h4 style="font-size: 0.85rem; margin: 1.5rem 0 0.5rem; color: var(--text-light);">Curriculum Alignment: MAP vs App Skills</h4>
+            <table>
+                <tr>
+                    <th>MAP Skill Area</th>
+                    <th>App Coverage</th>
+                    <th>Mastery Status</th>
+                    <th>Verdict</th>
+                </tr>
+                <tr>
+                    <td>Main Idea (Informational)</td>
+                    <td>MobyMax Info</td>
+                    <td>10% (4 attempts)</td>
+                    <td><span class="badge badge-danger">GAP - Doom Loop</span></td>
+                </tr>
+                <tr>
+                    <td>Summarizing</td>
+                    <td>MobyMax Info</td>
+                    <td>20% (4 attempts)</td>
+                    <td><span class="badge badge-danger">GAP - Doom Loop</span></td>
+                </tr>
+                <tr>
+                    <td>Cause/Effect</td>
+                    <td>MobyMax Info</td>
+                    <td>20% (4 attempts)</td>
+                    <td><span class="badge badge-danger">GAP - Doom Loop</span></td>
+                </tr>
+                <tr>
+                    <td>Context Clues</td>
+                    <td>MobyMax Info</td>
+                    <td>85%</td>
+                    <td><span class="badge badge-success">ALIGNED</span></td>
+                </tr>
+                <tr>
+                    <td>Decoding (CVCe, digraphs)</td>
+                    <td>Lalilo</td>
+                    <td>88% avg</td>
+                    <td><span class="badge badge-success">ALIGNED</span></td>
+                </tr>
+                <tr>
+                    <td>Fluency</td>
+                    <td>ClearFluency</td>
+                    <td>62 WCPM (Dec)</td>
+                    <td><span class="badge badge-warning">PARTIAL - Below benchmark</span></td>
+                </tr>
+            </table>
 
-            <div class="data-table" style="margin-top: 1.5rem;">
-                <h4>Curriculum Alignment: MAP vs App Skills</h4>
-                <table>
-                    <tr>
-                        <th>MAP Skill Area (161-170 RIT)</th>
-                        <th>App Coverage</th>
-                        <th>Assessment</th>
-                    </tr>
-                    <tr>
-                        <td>Phonics Decoding (CVCe, CVVC, multisyllable)</td>
-                        <td>Lalilo: G2 lessons 29-283 (diphthongs, long vowels, soft c/g, blends)</td>
-                        <td><span class="badge badge-success">ALIGNED</span></td>
-                    </tr>
-                    <tr>
-                        <td>Digraphs, Vowel Diphthongs</td>
-                        <td>Lalilo: oi, oy, aw, au, ow, ou + trigraphs (dge, tch, igh)</td>
-                        <td><span class="badge badge-success">ALIGNED</span></td>
-                    </tr>
-                    <tr>
-                        <td>Prefixes/Suffixes</td>
-                        <td>Lalilo: re-, un-, mis-, dis-, non-, pre- / -y, -ish, -able, -ly, -ful, -less, -er, -est</td>
-                        <td><span class="badge badge-success">ALIGNED</span></td>
-                    </tr>
-                    <tr>
-                        <td>Main Idea, Cause/Effect</td>
-                        <td>MobyMax Info (failed repeatedly), Lalilo listening comp</td>
-                        <td><span class="badge badge-danger">NOT MASTERED</span></td>
-                    </tr>
-                </table>
-                <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.5rem;">
-                    <strong>Overall:</strong> Lalilo mastered G2 lessons 29-283 (Diphthong "oi" → "Rise and Fall") covering extensive phonics, prefixes/suffixes, and vocabulary. Only comprehension skills remain unmastered.
-                </p>
-            </div>
+            <h4 style="font-size: 0.85rem; margin: 1.5rem 0 0.5rem; color: var(--text-light);">MAP-Indicated Placement vs Actual</h4>
+            <table>
+                <tr>
+                    <th>Indicator</th>
+                    <th>MAP Recommended</th>
+                    <th>Actual Placement</th>
+                    <th>Match?</th>
+                </tr>
+                <tr>
+                    <td>Effective Grade</td>
+                    <td>Grade 1</td>
+                    <td>ClearFluency G2 (Nov-Jan)</td>
+                    <td><span class="badge badge-danger">❌ 1 grade too high</span></td>
+                </tr>
+                <tr>
+                    <td>ORF Prerequisite</td>
+                    <td>Pass Level J (67 WCPM)</td>
+                    <td>Not passed (62 WCPM Dec 11)</td>
+                    <td><span class="badge badge-danger">❌ Placed before ready</span></td>
+                </tr>
+                <tr>
+                    <td>Current (Jan-Feb)</td>
+                    <td>Grade 1</td>
+                    <td>ClearFluency G1 Hole-Filling</td>
+                    <td><span class="badge badge-success">✅ Correct</span></td>
+                </tr>
+            </table>
 
             <div class="app-performance">
                 <h4>App Performance</h4>
@@ -420,25 +403,25 @@
                     <div class="app-name">ClearFluency G2</div>
                     <div class="app-bars">
                         <div class="bar-row">
-                            <span class="bar-label">Fluency (WCPM)</span>
+                            <span class="bar-label">Fluency</span>
                             <div class="bar-track">
-                                <div class="bar-fill good" style="width: 100%"></div>
+                                <div class="bar-fill warn" style="width: 85%"></div>
                             </div>
-                            <span class="bar-value">100%</span>
+                            <span class="bar-value">76/90</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">XP/Day</span>
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">33.6</span>
+                            <span class="bar-value">34</span>
                         </div>
                         <div class="bar-row">
-                            <span class="bar-label">Active Time/Day</span>
+                            <span class="bar-label">Time/Day</span>
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">35.2 min</span>
+                            <span class="bar-value">31 min</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">Accuracy</span>
@@ -450,41 +433,42 @@
                         <div class="bar-row">
                             <span class="bar-label">XP/Min</span>
                             <div class="bar-track">
-                                <div class="bar-fill good" style="width: 95%"></div>
+                                <div class="bar-fill bad" style="width: 54%"></div>
                             </div>
-                            <span class="bar-value">0.95</span>
+                            <span class="bar-value">0.78</span>
                         </div>
                     </div>
                 </div>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin: -0.5rem 0 1rem 0; padding-left: 130px;"><strong style="color: var(--danger);">INEFFECTIVE</strong> - Accuracy dropped to 57% with XP/Min 0.78. Content was too hard before passing G1 ORF benchmark.</p>
 
                 <div class="app-row">
                     <div class="app-name">ClearFluency G1</div>
                     <div class="app-bars">
                         <div class="bar-row">
-                            <span class="bar-label">Fluency (WCPM)</span>
+                            <span class="bar-label">Fluency</span>
                             <div class="bar-track">
-                                <div class="bar-fill good" style="width: 100%"></div>
+                                <div class="bar-fill good" style="width: 95%"></div>
                             </div>
-                            <span class="bar-value">100%</span>
+                            <span class="bar-value">85/90</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">XP/Day</span>
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">45.0</span>
+                            <span class="bar-value">39</span>
                         </div>
                         <div class="bar-row">
-                            <span class="bar-label">Active Time/Day</span>
+                            <span class="bar-label">Time/Day</span>
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">43.5 min</span>
+                            <span class="bar-value">39 min</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">Accuracy</span>
                             <div class="bar-track">
-                                <div class="bar-fill good" style="width: 76%"></div>
+                                <div class="bar-fill warn" style="width: 76%"></div>
                             </div>
                             <span class="bar-value">76%</span>
                         </div>
@@ -493,10 +477,11 @@
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">1.04</span>
+                            <span class="bar-value">1.0</span>
                         </div>
                     </div>
                 </div>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin: -0.5rem 0 1rem 0; padding-left: 130px;"><strong style="color: var(--success);">EFFECTIVE</strong> - XP/Min 1.0 indicates appropriate placement. Accuracy improved to 76% with strong time on task.</p>
 
                 <div class="app-row">
                     <div class="app-name">Lalilo</div>
@@ -506,14 +491,14 @@
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">37.5</span>
+                            <span class="bar-value">37</span>
                         </div>
                         <div class="bar-row">
-                            <span class="bar-label">Active Time/Day</span>
+                            <span class="bar-label">Time/Day</span>
                             <div class="bar-track">
-                                <div class="bar-fill warn" style="width: 67%"></div>
+                                <div class="bar-fill warn" style="width: 68%"></div>
                             </div>
-                            <span class="bar-value">16.8 min</span>
+                            <span class="bar-value">17 min</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">Accuracy</span>
@@ -525,12 +510,13 @@
                         <div class="bar-row">
                             <span class="bar-label">XP/Min</span>
                             <div class="bar-track">
-                                <div class="bar-fill bad" style="width: 100%"></div>
+                                <div class="bar-fill warn" style="width: 100%"></div>
                             </div>
                             <span class="bar-value">2.2</span>
                         </div>
                     </div>
                 </div>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin: -0.5rem 0 1rem 0; padding-left: 130px;"><strong style="color: var(--warning);">MIXED</strong> - Strong accuracy (88%) but XP/Min 2.2 suggests phonics content may be slightly easy. Good for foundational skills.</p>
 
                 <div class="app-row">
                     <div class="app-name">Amplify</div>
@@ -540,14 +526,14 @@
                             <div class="bar-track">
                                 <div class="bar-fill good" style="width: 100%"></div>
                             </div>
-                            <span class="bar-value">37.1</span>
+                            <span class="bar-value">37</span>
                         </div>
                         <div class="bar-row">
-                            <span class="bar-label">Active Time/Day</span>
+                            <span class="bar-label">Time/Day</span>
                             <div class="bar-track">
-                                <div class="bar-fill warn" style="width: 81%"></div>
+                                <div class="bar-fill warn" style="width: 80%"></div>
                             </div>
-                            <span class="bar-value">20.2 min</span>
+                            <span class="bar-value">20 min</span>
                         </div>
                         <div class="bar-row">
                             <span class="bar-label">Accuracy</span>
@@ -559,46 +545,20 @@
                         <div class="bar-row">
                             <span class="bar-label">XP/Min</span>
                             <div class="bar-track">
-                                <div class="bar-fill warn" style="width: 92%"></div>
+                                <div class="bar-fill warn" style="width: 100%"></div>
                             </div>
                             <span class="bar-value">1.84</span>
                         </div>
                     </div>
                 </div>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin: -0.5rem 0 1rem 0; padding-left: 130px;"><strong style="color: var(--warning);">MIXED</strong> - Strong metrics but redundant with Lalilo phonics. Phased out Nov 4 to reduce overlap.</p>
             </div>
 
-            <div class="data-table" style="margin-top: 1.5rem;">
-                <h4>App Effectiveness Analysis</h4>
-                <div style="background: var(--bg); padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem;">
-                    <strong>ClearFluency G2 (Nov-Jan):</strong> <span class="badge badge-warning">MIXED</span>
-                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">
-                        Accuracy ranged 10-87% indicating content too hard. Student hadn't passed G1 ORF benchmark.
-                    </p>
-                </div>
-                <div style="background: var(--bg); padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem;">
-                    <strong>ClearFluency G1 (Jan-Feb):</strong> <span class="badge badge-success">APPROPRIATE</span>
-                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">
-                        Accuracy improved to 67-92% in healthy range. Continue until G1 ORF benchmark passed.
-                    </p>
-                </div>
-                <div style="background: var(--bg); padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem;">
-                    <strong>Amplify (Aug-Nov):</strong> <span class="badge badge-success">EFFECTIVE</span>
-                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">
-                        87% average accuracy. XP/Min 1.84 with high accuracy suggests content may have been slightly easy. Phased out before full impact measured.
-                    </p>
-                </div>
-                <div style="background: var(--bg); padding: 0.75rem; border-radius: 6px;">
-                    <strong>Lalilo (Aug-Present):</strong> <span class="badge badge-success">EFFECTIVE</span>
-                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem;">
-                        88% accuracy across 85 days. Mastered G2 lessons 29-283 (diphthongs → silent letters). XP/Min 2.2 with high accuracy suggests content may be slightly too easy.
-                    </p>
-                </div>
-            </div>
         </div>
 
         <div class="footer">
             Aiden Richardson | Grade 1 | Alpha School Austin | Winter 2025-26<br>
-            Data: MAP Assessment, ClearFluency, Lalilo, Amplify, Literably ORF, MobyMax | Generated: February 2026
+            Data: MAP Assessment, Daily Metrics, Literably ORF, MobyMax Skills | Generated: February 2026
         </div>
     </div>
 </body>
